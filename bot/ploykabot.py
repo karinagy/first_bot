@@ -4,6 +4,7 @@ from telebot import types  # для указание типов
 token = '5293221845:AAG6B44cVULZtPIJUPGzOCMfVyurHYXm7mY'
 bot = telebot.TeleBot(token)
 
+#Две главные кнопки бота
 
 @bot.message_handler(commands=['start'])
 def start(message):
@@ -15,6 +16,7 @@ def start(message):
                      text="Привет, {0.first_name}! Я бот самого лучшего тусовочного места в Минске!".format(
                          message.from_user), reply_markup=markup)
 
+#Кнопка с ссылкой инстаграмма
 
 @bot.message_handler(commands=['url'])
 def url(message):
@@ -26,6 +28,8 @@ def url(message):
                      reply_markup=markup)
 
 
+#Кнрпка с ссылкой на сливки(купон на скидку)
+
 @bot.message_handler(commands=['slivky'])
 def url(message):
     markup = types.InlineKeyboardMarkup()
@@ -35,6 +39,8 @@ def url(message):
     bot.send_message(message.chat.id, "Нажми на кнопку и перейди для получения скидки при посещении.",
                      reply_markup=markup)
 
+
+#Первая главная кнопка выводит прайс комнат
 
 @bot.message_handler(content_types=['text', 'photo'])
 def func(message, markup=None):
@@ -47,12 +53,7 @@ def func(message, markup=None):
         bot.send_message(message.chat.id, text="- вип-комната <Коричневая> (до 10 человек):30 руб.,")
         bot.send_message(message.chat.id, text="- вип-комната <Серая> (до 10 человек): 45 руб." , reply_markup=markup)
 
-
-
-
-
-
-
+#Вторая главная кнопка дает начало еще 6 кнопкам(5 комнат+ возможность вернуться в начало)
 
     elif (message.text == "❓ Расскажи про комнаты"):
         markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
@@ -106,6 +107,8 @@ def func(message, markup=None):
         button2 = types.KeyboardButton("❓ Расскажи про комнаты")
         markup.add(button1, button2)
         bot.send_message(message.chat.id, text="Вы вернулись в главное меню", reply_markup=markup)
+ 
+#При ошибке выводит это сообщение
     else:
         bot.send_message(message.chat.id, text="На такую комманду я не запрограммирован..")
 
