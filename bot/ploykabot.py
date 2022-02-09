@@ -3,15 +3,17 @@ from telebot import types  # для указание типов
 
 token = '5293221845:AAG6B44cVULZtPIJUPGzOCMfVyurHYXm7mY'
 bot = telebot.TeleBot(token)
+keyboard = telebot.types.ReplyKeyboardMarkup(True)
 
-#Две главные кнопки бота
+#Три главные кнопки бота
 
 @bot.message_handler(commands=['start'])
 def start(message):
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
     btn1 = types.KeyboardButton("Прайс")
     btn2 = types.KeyboardButton("❓ Расскажи про комнаты")
-    markup.add(btn1, btn2)
+    btn3 = types.KeyboardButton("📅 Забронировать комнату")
+    markup.add(btn1, btn2, btn3)
     bot.send_message(message.chat.id,
                      text="Привет, {0.first_name}! Я бот самого лучшего тусовочного места в Минске!".format(
                          message.from_user), reply_markup=markup)
@@ -41,6 +43,11 @@ def url(message):
 
 
 #Первая главная кнопка выводит прайс комнат
+
+name_of_person = ''
+
+age = 0
+
 
 @bot.message_handler(content_types=['text', 'photo'])
 def func(message, markup=None):
@@ -105,12 +112,63 @@ def func(message, markup=None):
         markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
         button1 = types.KeyboardButton("Прайс")
         button2 = types.KeyboardButton("❓ Расскажи про комнаты")
-        markup.add(button1, button2)
+        button3 = types.KeyboardButton("📅 Забронировать комнату")
+        markup.add(button1, button2, button3)
         bot.send_message(message.chat.id, text="Вы вернулись в главное меню", reply_markup=markup)
  
-#При ошибке выводит это сообщение
+        
+        
+    elif message.text == "📅 Забронировать комнату":
+        name = bot.send_message(message.from_user.id, 'Введите ваше имя для бронирования комнаты: ',
+                                reply_markup=keyboard)
+
+        bot.register_next_step_handler(name, get_age)
     else:
-        bot.send_message(message.chat.id, text="На такую комманду я не запрограммирован..")
+        bot.send_message(message.chat.id, text='Упс.Такой команды я не знаю.')
+
+
+def get_age(message):
+    global name_of_person
+    age_of = bot.send_message(message.chat.id, text='Введите ваш возраст')
+    name_of_person = message.text
+
+    bot.register_next_step_handler(age_of, get_telephone)
+
+
+def get_telephone(message):
+    global age
+    age = int(message.text)
+    if age < 18:
+        bot.send_message(message.chat.id,
+                         text='‼️Уважаемые посетители плойки! Информируем вас о том, что в связи с законодательством РБ на территории заведения несовершенолетним запрещается:распивать и приобретать алкогольные напитки, курить кальян, а так же приобретать HQD у администратора.Спасибо за понимание! ‼️')
+    else:
+        bot.send_message(message.chat.id,
+                         text='✅️Уважаемые посетители плойки!Спешим информировать вас о том, что на территории нашего заведения вы всегда можете заказать кальян, а так же приобрести алкогольные напитки.С уважением, администация плойки! ✅')
+    tel = bot.send_message(message.chat.id,
+                           text='Введите номер телефона, для завершения брони', reply_markup=keyboard)
+    bot.register_next_step_handler(tel, confirm_booking)
+
+#Прозрачные кнопки для подтверждения брони
+
+def confirm_booking(message):
+    keyboard = types.InlineKeyboardMarkup()  # наша клавиатура
+    key_yes = types.InlineKeyboardButton(text='Да', callback_data='yes')  # кнопка «Да»
+    keyboard.add(key_yes)  # добавляем кнопку в клавиатуру
+    key_no = types.InlineKeyboardButton(text='Нет', callback_data='no')
+    keyboard.add(key_no)
+    question = f'Ваше имя {name_of_person} и Ваш номер телефона {message.text}.Верно ли указана вся информация?'
+    bot.send_message(message.from_user.id, text=question, reply_markup=keyboard)
+    
+#Реакция на нажатие кнопок
+
+    @bot.callback_query_handler(func=lambda call: True)
+    def callback_worker(call):
+        if call.data == "yes":
+            bot.send_message(call.message.chat.id,
+                             text='Бронь передана , в ближайшее время с вами свяжется администатор для подтверждения брони')
+        elif call.data == "no":
+            error = bot.send_message(call.message.chat.id,
+                                     text='Если возникла ошибка при бронировании, следует повторить операцию бронирования сначала')
 
 
 bot.polling(none_stop=True)
