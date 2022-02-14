@@ -6,18 +6,21 @@ bot = telebot.TeleBot(token)
 keyboard = telebot.types.ReplyKeyboardMarkup(True)
 
 
+# Главные 4 кнопки
 @bot.message_handler(commands=['start'])
 def start(message):
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
     btn1 = types.KeyboardButton("✅ Прайс")
     btn2 = types.KeyboardButton("❓ Расскажи про комнаты")
     btn3 = types.KeyboardButton("📅 Забронировать комнату")
-    markup.add(btn1, btn2, btn3)
+    btn4 = types.KeyboardButton("🥂 Ployka Бар")
+    markup.add(btn1, btn2, btn3, btn4)
     bot.send_message(message.chat.id,
-                     text="Привет, {0.first_name}! Я бот самого лучшего тусовочного места в Минске!Чем я могу тебе помочь?".format(
-                         message.from_user), reply_markup=markup)
+                     text="Привет, {0.first_name}! Я бот самого лучшего тусовочного места в Минске!Чем я могу тебе "
+                          "помочь?".format(message.from_user), reply_markup=markup)
 
 
+# Кнопка с ссылкой на инстаграм
 @bot.message_handler(commands=['inst'])
 def inst(message):
     markup = types.InlineKeyboardMarkup()
@@ -28,6 +31,7 @@ def inst(message):
                      reply_markup=markup)
 
 
+# Кнопка с ссылкой на тикток
 @bot.message_handler(commands=['slivky'])
 def slivky(message):
     markup = types.InlineKeyboardMarkup()
@@ -40,6 +44,7 @@ def slivky(message):
                      reply_markup=markup)
 
 
+# Кнопка с ссылкой на Яндекс Отзывы
 @bot.message_handler(commands=['feedback'])
 def feedback(message):
     markup = types.InlineKeyboardMarkup()
@@ -51,6 +56,7 @@ def feedback(message):
                      reply_markup=markup)
 
 
+# Кнопка с ссылкой на тикток
 @bot.message_handler(commands=['tiktok'])
 def tiktok(message):
     markup = types.InlineKeyboardMarkup()
@@ -66,6 +72,7 @@ rooms = ''
 age = 0
 
 
+# При нажатии на кнопку прайс , появляется текст с прайсом услуг
 @bot.message_handler(content_types=['text', 'photo'])
 def func(message):
     if message.text == "✅ Прайс":
@@ -76,10 +83,47 @@ def func(message):
                               "руб.*\n\n- вип-комната "
                               "💙Голубая💙 (до 7 человек)\n*25 руб.*\n\n- вип-комната 🤎Коричневая🤎 (до 10 человек)\n*30 "
                               "руб.*\n\n- вип-комната 🤍Серая🤍 (до 10 человек)\n*45 руб.*", parse_mode='Markdown')
+    elif message.text == "🥂 Ployka Бар":
+        markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+        alcoh = types.KeyboardButton("Алкогольные напитки")
+        drink = types.KeyboardButton("Напитки")
+        snack = types.KeyboardButton("Снэки")
+        hookah = types.KeyboardButton("Кальян")
+        back = types.KeyboardButton("Вернуться в главное меню")
+        markup.add(alcoh, drink, snack, hookah, back)
+        bot.send_message(message.chat.id, text="Выбери интересующий раздел Ployka Бара", reply_markup=markup)
 
+    elif message.text == "Алкогольные напитки":
+        bot.send_message(message.chat.id, text="*🍸Алкогольные напитки🍸*\n\nВодка «Finland»\n_100pyб._\n\nСваяк\n"
+                                               "_8руб._\n\nСтарка\n_8руб._\n\nВиски «Passport Scotch»\n_50руб._\nВиски "
+                                               "«Jack Daniel's»\n_150руб_\nВиски «Сhivas Regal 12 "
+                                               "лет»\n_120руб._\nВиски «Monkey Shoulder»\n_250руб._\n"
+                                               "Виски «Ballantine's Finest»\n_75руб._\n\nВермут «Martini "
+                                               "Bianco»\n_35руб._\n\nВино «JP Chenet»\n_40руб._\n"
+                                               "Вино игристое «Reguta Ribolla»\n_40руб._\nВино игристое «Lambrusco "
+                                               "Lunato»\n_25руб._\nВино игристое «BOSCA»\n_25руб._ "
+                                               "\n\nСоветское Шампанское\n_12руб_.", parse_mode='Markdown')
+    elif message.text == "Напитки":
+        bot.send_message(message.chat.id, text="*Напитки*\n\nCoca Cola(в ассортименте)\n_3.0pуб._\n\nFanta\n_3.0руб._\n"
+                                               "\nSprite\n_3.0руб._\n\nBurn\n_5.0руб._\n\nВода Bonaqua "
+                                               "газ./негаз.\n_2.5руб._\n\nБалтика 0 Пшеничное\n_4.0руб._\n\nБалтика 0 "
+                                               "Грейпфрут\n_3.0руб_", parse_mode='Markdown')
 
+    elif message.text == "Кальян":
+        bot.send_message(message.chat.id, text="*Кальян*\n\nКальян премиум\n_31руб._\n\n❗При заказе второго кальяна "
+                                               "цена - 27руб.❗", parse_mode='Markdown')
 
-    elif (message.text == "❓ Расскажи про комнаты"):
+    elif message.text == "Снэки":
+        bot.send_message(message.chat.id, text="*Cнэки*\n\nLays маленький/средний/большой\n_2.0/4.0/6.0руб._\n\n"
+                                               "Попкорн "
+                                               "70гр\n_2.0руб._\n\nПопкорн 180гр\n_3.0руб._\n\nСухарики "
+                                               "Хрусteam\n_1.5руб._\n\nCabandos\n_5.0руб_\n\nКальмар\n_4.0руб_\n\n"
+                                               "Жвачка\n_2 "
+                                               ".0руб._\n\nSnikers/Twix/kitkat\n_2.0руб._",
+                         parse_mode='Markdown')
+
+        # При нажатии на кнопку прайс , появляется 5 кнопок с комнатами + вернуться в главное меню
+    elif message.text == "❓ Расскажи про комнаты":
         markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
         btn1 = types.KeyboardButton("Голубая🎲🧩")
         btn2 = types.KeyboardButton("Желтая🍸")
@@ -91,7 +135,7 @@ def func(message):
         bot.send_message(message.chat.id, text="Выбирай комнату и я расскажу о ней", reply_markup=markup)
 
 
-
+    # 5 кнопок + изображение каждой комнаты
     elif message.text == "Голубая🎲🧩":
         bot.send_message(message.chat.id,
                          text="🔵 *Голубая комната* 🔵\n\n⚡️ Вмещает до 7 человек\n\n⚡️ Большой диван и кресла "
@@ -102,9 +146,6 @@ def func(message):
                          parse_mode="Markdown")
         img1 = "https://wampi.ru/image/RhIZ90E"
         bot.send_message(message.chat.id, text=img1)
-
-
-
     elif message.text == "Желтая🍸":
         bot.send_message(message.chat.id,
                          text="🟡 *Жёлтая комната* 🟡\n\n САМАЯ ПРИВАТНАЯ КОМНАТА ПЛОЙКИ!\n\n3̶ ̶к̶р̶е̶с̶л̶а̶ "
@@ -113,9 +154,6 @@ def func(message):
                               "-Маленький столик для ваших напитков и еды.", parse_mode="Markdown")
         img2 = "https://wampi.ru/image/RhIjjIs"
         bot.send_message(message.chat.id, text=img2)
-
-
-
     elif message.text == "Фиолетовая🍔🍟":
         bot.send_message(message.chat.id,
                          text="🟣 *Фиолетовая комната* 🟣\n\nКомфортный диван с подушками + *кресло-мешок*\n\nЛед "
@@ -142,20 +180,22 @@ def func(message):
     elif message.text == "Коричневая🎮":
         bot.send_message(message.chat.id,
                          text="🟤 *Коричневая комната* 🟤\n\nБольшой диван + кресла мешки → *ВМЕЩАЕТ ДО 10 ЧЕЛОВЕК*\n\n"
-                              "✅ Большой телевизор на 55 дюймов и мощная аудиосистема\n\n✅ Большой стол, специально для наших "
+                              "✅ Большой телевизор на 55 дюймов и мощная аудиосистема\n\n✅ Большой стол, специально "
+                              "для наших "
                               "настольных игр и ваших напитков😉\n\n✅ Закрывается на ключ", parse_mode="Markdown")
         bot.send_message(message.chat.id,
                          text="https://wampi.ru/image/RhIr0mw")
 
-
-    elif (message.text == "Вернуться в главное меню"):
+    # Возвращает в самое начало
+    elif message.text == "Вернуться в главное меню":
         markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
         button1 = types.KeyboardButton("✅ Прайс")
         button2 = types.KeyboardButton("❓ Расскажи про комнаты")
         button3 = types.KeyboardButton("📅 Забронировать комнату")
-        markup.add(button1, button2, button3)
+        button4 = types.KeyboardButton("🥂 Ployka Бар")
+        markup.add(button1, button2, button3, button4)
         bot.send_message(message.chat.id, text="Вы вернулись в главное меню", reply_markup=markup)
-
+    # Принимает бронь у человека 1) запрашивает имя
     elif message.text == "📅 Забронировать комнату":
         name = bot.send_message(message.from_user.id, 'Введите ваше имя для бронирования комнаты ',
                                 reply_markup=keyboard)
@@ -168,6 +208,7 @@ def func(message):
 bot.message_handler(content_types=['text'])
 
 
+# 2) получает имя и запрашивает возраст для информирования пользователя о его возможностях на территории заведения
 def get_age(message):
     global name_of_person
     age_of = bot.send_message(message.chat.id, text='Введите ваш возраст')
@@ -176,6 +217,7 @@ def get_age(message):
     bot.register_next_step_handler(age_of, get_number_of_people)
 
 
+# 3) получает возраст , выдает информацию + запрашивает количество человек для помощи в подборе комнаты
 def get_number_of_people(message):
     global age
     age = int(message.text)
@@ -205,6 +247,7 @@ def get_number_of_people(message):
     bot.register_next_step_handler(number_of_people, get_room)
 
 
+# 4) получает количество человек , подбирает комнату исходя из количества человек комнату
 @bot.message_handler(content_types=['text'])
 def get_room(message):
     if message.text == '<3':
@@ -228,8 +271,10 @@ def get_room(message):
     elif message.text == 'до 20':
         bot.send_message(message.chat.id,
                          text='Для масштабных мероприятий(корпоратив, день рождения) плойка предлагает возможность '
-                              '‼*СЪЕМА ВСЕГО ОБЩЕГО ЗАЛА*‼ всего за _50 руб./час_ для максимального комфорта Вас и Ваших гостей',
+                              '‼*СЪЕМА ВСЕГО ОБЩЕГО ЗАЛА*‼ всего за _50 руб./час_ для максимального комфорта Вас и '
+                              'Ваших гостей',
                          parse_mode='Markdown')
+    # 5)Создает 7 кнопок для выбора комнаты
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
     btn1 = types.KeyboardButton("Голубая🎲🧩")
     btn2 = types.KeyboardButton("Желтая🍸")
@@ -244,6 +289,7 @@ def get_room(message):
     bot.register_next_step_handler(room, get_telephone)
 
 
+# 6)Подтверждает комнату + запрашивает номер телефона
 def get_telephone(message):
     global rooms
     rooms = message.text
@@ -257,14 +303,13 @@ def get_telephone(message):
         button1 = types.KeyboardButton("✅ Прайс")
         button2 = types.KeyboardButton("❓ Расскажи про комнаты")
         button3 = types.KeyboardButton("📅 Забронировать комнату")
-        markup.add(button1, button2, button3)
+        button4 = types.KeyboardButton("🥂 Ployka Бар")
+        markup.add(button1, button2, button3, button4)
         bot.send_message(message.chat.id, text="Вы вернулись в главное меню", reply_markup=markup)
-
 
     elif message.text == "Желтая🍸":
         bot.send_message(message.chat.id,
                          text=f"Вы выбрали {message.text} вип-комнату")
-
 
     elif message.text == "Фиолетовая🍔🍟":
         bot.send_message(message.chat.id,
@@ -287,6 +332,7 @@ def get_telephone(message):
     bot.register_next_step_handler(tel, confirm_booking)
 
 
+# 7) Завершает бронь и подверждает всю информацию
 def confirm_booking(message):
     keyboard = types.InlineKeyboardMarkup()  # наша клавиатура
     key_yes = types.InlineKeyboardButton(text='Да', callback_data='yes')  # кнопка «Да»
@@ -294,9 +340,11 @@ def confirm_booking(message):
     key_no = types.InlineKeyboardButton(text='Нет', callback_data='no')
     keyboard.add(key_no)
 
-    question = f'Ваше имя {name_of_person} и номер телефона {message.text}Бронь будеть оформлена на {rooms}.Верно ли указана вся информация?'
+    question = f'Ваше имя {name_of_person} и номер телефона {message.text}Бронь будеть оформлена на {rooms}.Верно ли ' \
+               f'указана вся информация? '
     bot.send_message(message.from_user.id, text=question, reply_markup=keyboard)
 
+    # Создает две кнопки "да" и "нет" для подтверждения брони
     @bot.callback_query_handler(func=lambda call: True)
     def callback_worker(call):
         if call.data == "yes":
@@ -305,11 +353,10 @@ def confirm_booking(message):
                              text='Бронь передана , в ближайшее время с вами свяжется администатор для подтверждения '
                                   'брони.\nСпасибо, что выбрали именно нас!')
 
-
         elif call.data == "no":
-            error = bot.send_message(call.message.chat.id,
-                                     text='Если возникла ошибка при бронировании, следует повторить операцию '
-                                          'бронирования сначала.')
+            bot.send_message(call.message.chat.id,
+                             text='Если возникла ошибка при бронировании, следует повторить операцию '
+                                  'бронирования сначала.')
 
 
 bot.polling(none_stop=True)
