@@ -70,6 +70,8 @@ def tiktok(message):
 name_of_person = ''
 rooms = ''
 age = 0
+tel_of_person = 0
+telephone = 0
 
 
 # При нажатии на кнопку прайс , появляется текст с прайсом услуг
@@ -145,7 +147,7 @@ def func(message):
                               "настольных игр и ваших напитков😉",
                          parse_mode="Markdown")
         img1 = "https://wampi.ru/image/RhIZ90E"
-        bot.send_message(message.chat.id, text=img1)
+        bot.send_photo(message.chat.id, img1)
     elif message.text == "Желтая🍸":
         bot.send_message(message.chat.id,
                          text="🟡 *Жёлтая комната* 🟡\n\n САМАЯ ПРИВАТНАЯ КОМНАТА ПЛОЙКИ!\n\n3̶ ̶к̶р̶е̶с̶л̶а̶ "
@@ -153,7 +155,7 @@ def func(message):
                               "светильник.\n\n-Подписка на IVI для ещё более комфортного просмотра фильмов.\n\n"
                               "-Маленький столик для ваших напитков и еды.", parse_mode="Markdown")
         img2 = "https://wampi.ru/image/RhIjjIs"
-        bot.send_message(message.chat.id, text=img2)
+        bot.send_photo(message.chat.id, img2)
     elif message.text == "Фиолетовая🍔🍟":
         bot.send_message(message.chat.id,
                          text="🟣 *Фиолетовая комната* 🟣\n\nКомфортный диван с подушками + *кресло-мешок*\n\nЛед "
@@ -163,7 +165,7 @@ def func(message):
                               "*‼️Закрывается "
                               "шторкой ‼️*", parse_mode="Markdown")
         img3 = "https://wampi.ru/image/RhIrsYn"
-        bot.send_message(message.chat.id, text=img3)
+        bot.send_photo(message.chat.id, img3)
 
     elif message.text == "Серая🎤":
         bot.send_message(message.chat.id,
@@ -174,8 +176,15 @@ def func(message):
                               "телевизор на 60 дюймов + мощнейшая аудиосистема\n\n❗️*Cистема домашнего кинотеатра для "
                               "объёмного звука при игре в PS/просмотре фильмов* ❗\n_P.S Теперь слушать ваши любимые "
                               "песни можно еще громче_ ", parse_mode="Markdown")
-        bot.send_message(message.chat.id,
-                         text="https://wampi.ru/image/RhIrJBq")
+        img4 = "https://wampi.ru/image/RhIrJBq"
+        img5 = "https://wampi.ru/image/RkULOHH"
+        img6 = "https://wampi.ru/image/RkULakZ"
+        bot.send_photo(message.chat.id,
+                       img4)
+        bot.send_photo(message.chat.id,
+                       img5)
+        bot.send_photo(message.chat.id,
+                       img6)
 
     elif message.text == "Коричневая🎮":
         bot.send_message(message.chat.id,
@@ -183,8 +192,12 @@ def func(message):
                               "✅ Большой телевизор на 55 дюймов и мощная аудиосистема\n\n✅ Большой стол, специально "
                               "для наших "
                               "настольных игр и ваших напитков😉\n\n✅ Закрывается на ключ", parse_mode="Markdown")
-        bot.send_message(message.chat.id,
-                         text="https://wampi.ru/image/RhIr0mw")
+        img7 = "https://wampi.ru/image/RhIr0mw"
+        img8 = "https://wampi.ru/image/RkULTr4"
+        bot.send_photo(message.chat.id,
+                       img7)
+        bot.send_photo(message.chat.id,
+                       img8)
 
     # Возвращает в самое начало
     elif message.text == "Вернуться в главное меню":
@@ -211,7 +224,7 @@ bot.message_handler(content_types=['text'])
 # 2) получает имя и запрашивает возраст для информирования пользователя о его возможностях на территории заведения
 def get_age(message):
     global name_of_person
-    age_of = bot.send_message(message.chat.id, text='Введите ваш возраст')
+    age_of = bot.send_message(message.chat.id, text='Введите ваш возраст(цифрами).')
     name_of_person = message.text
 
     bot.register_next_step_handler(age_of, get_number_of_people)
@@ -228,12 +241,13 @@ def get_number_of_people(message):
                               'РБ на территории заведения несовершенолетним запрещается: распивать и приобретать '
                               'алкогольные напитки, курить кальян, а так же приобретать HQD у администратора.Спасибо '
                               'за понимание!_️', parse_mode='Markdown')
-    else:
+    elif age > 18:
         bot.send_message(message.chat.id,
                          text='✅️*Уважаемые посетители плойки* ✅\n\n_Спешим информировать вас о том, '
                               'что на территории нашего '
                               'заведения вы всегда можете заказать кальян, а так же приобрести алкогольные напитки.С '
                               'уважением, администация плойки!_', parse_mode='Markdown')
+
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
     btn1 = types.KeyboardButton("<3")
     btn2 = types.KeyboardButton("4-5")
@@ -329,34 +343,73 @@ def get_telephone(message):
     tel = bot.send_message(message.from_user.id, 'Введите Ваш номер телефона для завершения брони.',
                            reply_markup=keyboard)
 
-    bot.register_next_step_handler(tel, confirm_booking)
+    bot.register_next_step_handler(tel, cheak_telephone)
 
 
 # 7) Завершает бронь и подверждает всю информацию
-def confirm_booking(message):
-    keyboard = types.InlineKeyboardMarkup()  # наша клавиатура
-    key_yes = types.InlineKeyboardButton(text='Да', callback_data='yes')  # кнопка «Да»
-    keyboard.add(key_yes)  # добавляем кнопку в клавиатуру
-    key_no = types.InlineKeyboardButton(text='Нет', callback_data='no')
-    keyboard.add(key_no)
+def cheak_telephone(message, keyboard=None):
+    global tel_of_person
+    tel_of_person = message.text
+    if len(tel_of_person) != 13:
+        cheak = bot.send_message(message.from_user.id,
+                                 text="Проверьте правильность набранного номера.Введите номер (+375("
+                                      "ХХ)ХХХХХХХ)", reply_markup=keyboard)
+        bot.register_next_step_handler(cheak, change_telephone)
+    else:
+        keyboard = types.InlineKeyboardMarkup()  # наша клавиатура
+        key_yes = types.InlineKeyboardButton(text='Да', callback_data='yes')  # кнопка «Да»
+        key_no = types.InlineKeyboardButton(text='Нет', callback_data='no')
+        keyboard.add(key_yes, key_no)
 
-    question = f'Ваше имя {name_of_person} и номер телефона {message.text}Бронь будеть оформлена на {rooms}.Верно ли ' \
-               f'указана вся информация? '
-    bot.send_message(message.from_user.id, text=question, reply_markup=keyboard)
+        question = f'Ваше имя {name_of_person} и номер телефона {tel_of_person}.Бронь будеть оформлена на {rooms}.Верно ' \
+                   f'ли  указана вся информация? '
+        bot.send_message(message.from_user.id, text=question, reply_markup=keyboard)
 
-    # Создает две кнопки "да" и "нет" для подтверждения брони
-    @bot.callback_query_handler(func=lambda call: True)
-    def callback_worker(call):
-        if call.data == "yes":
+        @bot.callback_query_handler(func=lambda call: True)
+        def callback_worker(call):
+            if call.data == "yes":
 
-            bot.send_message(call.message.chat.id,
-                             text='Бронь передана , в ближайшее время с вами свяжется администатор для подтверждения '
-                                  'брони.\nСпасибо, что выбрали именно нас!')
+                bot.send_message(call.message.chat.id,
+                                 text='Бронь передана , в ближайшее время с вами свяжется администатор для подтверждения '
+                                      'брони.\nСпасибо, что выбрали именно нас!')
 
-        elif call.data == "no":
-            bot.send_message(call.message.chat.id,
-                             text='Если возникла ошибка при бронировании, следует повторить операцию '
-                                  'бронирования сначала.')
+            elif call.data == "no":
+                bot.send_message(call.message.chat.id,
+                                 text='Если возникла ошибка при бронировании, следует повторить операцию '
+                                      'бронирования сначала.')
+
+
+def change_telephone(message):
+    telephone = message.text
+    bot.send_message(message.chat.id, text=f"Ваш номер телефона {telephone}")
+
+    if message.text == "НЕТ":
+        bot.send_message(message.from_user.id, text='Если возникла ошибка при бронировании, следует повторить операцию'
+                                                    'бронирования сначала.')
+
+
+    else:
+        keyboard = types.InlineKeyboardMarkup()  # наша клавиатура
+        key_yes = types.InlineKeyboardButton(text='Да', callback_data='yes')  # кнопка «Да»
+        key_no = types.InlineKeyboardButton(text='Нет', callback_data='no')
+        keyboard.add(key_yes, key_no)
+
+        question = f'Ваше имя {name_of_person} и номер телефона {telephone}.Бронь будеть оформлена на {rooms}.Верно ' \
+                   f'ли  указана вся информация? '
+        bot.send_message(message.from_user.id, text=question, reply_markup=keyboard)
+
+        @bot.callback_query_handler(func=lambda call: True)
+        def callback_worker(call):
+            if call.data == "yes":
+
+                bot.send_message(call.message.chat.id,
+                                 text='Бронь передана , в ближайшее время с вами свяжется администатор для подтверждения '
+                                      'брони.\nСпасибо, что выбрали именно нас!')
+
+            elif call.data == "no":
+                bot.send_message(call.message.chat.id,
+                                 text='Если возникла ошибка при бронировании, следует повторить операцию '
+                                      'бронирования сначала.')
 
 
 bot.polling(none_stop=True)
