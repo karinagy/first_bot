@@ -10,11 +10,16 @@ keyboard = telebot.types.ReplyKeyboardMarkup(True)
 @bot.message_handler(commands=['start'])
 def start(message):
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-    btn1 = types.KeyboardButton("✅ Прайс")
+
+    btn1 = types.KeyboardButton("📅 Забронировать комнату")
+    markup.row(btn1)
     btn2 = types.KeyboardButton("❓ Расскажи про комнаты")
-    btn3 = types.KeyboardButton("📅 Забронировать комнату")
+    markup.row(btn2)
+    btn3 = types.KeyboardButton("✅ Прайс")
     btn4 = types.KeyboardButton("🥂 Ployka Бар")
-    markup.add(btn1, btn2, btn3, btn4)
+    markup.row(btn3, btn4)
+    btn5 = types.KeyboardButton("Сообщить о проблеме")
+    markup.row(btn5)
     bot.send_message(message.chat.id,
                      text="Привет, {0.first_name}! Я бот самого лучшего тусовочного места в Минске!Чем я могу тебе "
                           "помочь?".format(message.from_user), reply_markup=markup)
@@ -72,6 +77,7 @@ rooms = ''
 age = 0
 tel_of_person = 0
 telephone = 0
+TO_CHAT_ID = 957891234  # ID будущего администратора
 
 
 # При нажатии на кнопку прайс , появляется текст с прайсом услуг
@@ -198,15 +204,32 @@ def func(message):
                        img7)
         bot.send_photo(message.chat.id,
                        img8)
+    elif message.text == "Сообщить о проблеме":
+        bot.send_message(message.chat.id,
+                         text="*❗Внимание❗*\n\n_Не забывайте указывать ваше имя и номер для связи.Если "
+                              "проблема требует незамедлительного решения, пожалуйста, позвоните по "
+                              "этому номеру(номер админа)_", parse_mode="Markdown")
+        probl = bot.send_message(message.chat.id, text="Распишите пожалуйста суть вашей проблемы и я передам ее "
+                                                       "администратору для решения.\n*Приносим свои извинения за "
+                                                       "предоставленные "
+                                                       "неудобства!*", reply_markup=keyboard, parse_mode="Markdown")
+        bot.register_next_step_handler(probl, get_problem)
+
+
 
     # Возвращает в самое начало
     elif message.text == "Вернуться в главное меню":
         markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-        button1 = types.KeyboardButton("✅ Прайс")
-        button2 = types.KeyboardButton("❓ Расскажи про комнаты")
-        button3 = types.KeyboardButton("📅 Забронировать комнату")
-        button4 = types.KeyboardButton("🥂 Ployka Бар")
-        markup.add(button1, button2, button3, button4)
+
+        btn1 = types.KeyboardButton("📅 Забронировать комнату")
+        markup.row(btn1)
+        btn2 = types.KeyboardButton("❓ Расскажи про комнаты")
+        markup.row(btn2)
+        btn3 = types.KeyboardButton("✅ Прайс")
+        btn4 = types.KeyboardButton("🥂 Ployka Бар")
+        markup.row(btn3, btn4)
+        btn5 = types.KeyboardButton("Сообщить о проблеме")
+        markup.row(btn5)
         bot.send_message(message.chat.id, text="Вы вернулись в главное меню", reply_markup=markup)
     # Принимает бронь у человека 1) запрашивает имя
     elif message.text == "📅 Забронировать комнату":
@@ -240,13 +263,13 @@ def get_number_of_people(message):
                               'законодательством '
                               'РБ на территории заведения несовершенолетним запрещается: распивать и приобретать '
                               'алкогольные напитки, курить кальян, а так же приобретать HQD у администратора.Спасибо '
-                              'за понимание!_️', parse_mode='Markdown')
+                              'за понимание!_️', parse_mode="Markdown")
     elif age > 18:
         bot.send_message(message.chat.id,
                          text='✅️*Уважаемые посетители плойки* ✅\n\n_Спешим информировать вас о том, '
                               'что на территории нашего '
                               'заведения вы всегда можете заказать кальян, а так же приобрести алкогольные напитки.С '
-                              'уважением, администация плойки!_', parse_mode='Markdown')
+                              'уважением, администация плойки!_', parse_mode="Markdown")
 
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
     btn1 = types.KeyboardButton("<3")
@@ -314,11 +337,16 @@ def get_telephone(message):
 
     elif message.text == 'Вернуться в главное меню':
         markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-        button1 = types.KeyboardButton("✅ Прайс")
-        button2 = types.KeyboardButton("❓ Расскажи про комнаты")
-        button3 = types.KeyboardButton("📅 Забронировать комнату")
-        button4 = types.KeyboardButton("🥂 Ployka Бар")
-        markup.add(button1, button2, button3, button4)
+
+        btn1 = types.KeyboardButton("📅 Забронировать комнату")
+        markup.row(btn1)
+        btn2 = types.KeyboardButton("❓ Расскажи про комнаты")
+        markup.row(btn2)
+        btn3 = types.KeyboardButton("✅ Прайс")
+        btn4 = types.KeyboardButton("🥂 Ployka Бар")
+        markup.row(btn3, btn4)
+        btn5 = types.KeyboardButton("Сообщить о проблеме")
+        markup.row(btn5)
         bot.send_message(message.chat.id, text="Вы вернулись в главное меню", reply_markup=markup)
 
     elif message.text == "Желтая🍸":
@@ -365,12 +393,15 @@ def cheak_telephone(message, keyboard=None):
                    f'ли  указана вся информация? '
         bot.send_message(message.from_user.id, text=question, reply_markup=keyboard)
 
+        bot.forward_message(TO_CHAT_ID, message.from_user.id, message.message_id)
+
         @bot.callback_query_handler(func=lambda call: True)
         def callback_worker(call):
             if call.data == "yes":
 
                 bot.send_message(call.message.chat.id,
-                                 text='Бронь передана , в ближайшее время с вами свяжется администатор для подтверждения '
+                                 text='Бронь передана , в ближайшее время с вами свяжется администатор для '
+                                      'подтверждения '
                                       'брони.\nСпасибо, что выбрали именно нас!')
 
             elif call.data == "no":
@@ -410,6 +441,12 @@ def change_telephone(message):
                 bot.send_message(call.message.chat.id,
                                  text='Если возникла ошибка при бронировании, следует повторить операцию '
                                       'бронирования сначала.')
+
+
+def get_problem(message):
+    bot.forward_message(TO_CHAT_ID, message.from_user.id, message.message_id)
+    bot.send_message(message.chat.id, text="Информация передана, в ближайшее время с вами свяжется администратор "
+                                           "для решения проблемы.")
 
 
 bot.polling(none_stop=True)
